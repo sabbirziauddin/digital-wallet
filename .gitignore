@@ -1,0 +1,11 @@
+
+//write git ignore file
+.DS_Store
+npm-debug.log
+yarn-debug.log     
+yarn-error.log
+.env
+node_modules/
+dist/
+    
+
