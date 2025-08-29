@@ -18,3 +18,21 @@ const startServer = async () => {
 
 }
 startServer();
+
+//unhandle exeption
+process.on("uncaughtException", (error) => {
+    if (server) {
+        console.log("Uncaught Exception: ", error);
+        process.exit(1); // Exit the process with failure
+    }
+    process.exit(1); // Exit the process with success
+});
+
+//Promise.reject(new Error("I forgot to catch this uncaught exception"));
+process.on("unhandledRejection", (error) => {
+    if (server) {
+        console.log("uncaught rejection", error);
+        process.exit(1);
+    }
+    process.exit(1);
+});
