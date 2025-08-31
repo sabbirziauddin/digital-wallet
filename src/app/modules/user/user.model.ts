@@ -14,7 +14,10 @@ const userSchema = new Schema<IUser>({
     password: { type: String, required: false, trim: true },
     role: { type: String, enum: Object.values(Role), default: Role.USER },
     status: { type: String, enum: Object.values(Status), default: Status.ACTIVE },
+    isDeleted: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
     auths: { type: [authProviderSchema], required: false, default: [] },
+    _id: { type: Schema.Types.ObjectId, ref: "User", required: true },
 
 }, {
     timestamps: true,
