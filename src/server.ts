@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { envVars } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 let server: any;
 const PORT = process.env.PORT
 const startServer = async () => {
@@ -17,7 +18,10 @@ const startServer = async () => {
     }
 
 }
-startServer();
+(async () => {
+    await startServer()
+    await seedSuperAdmin()
+})()
 
 //unhandle exeption
 process.on("uncaughtException", (error) => {
