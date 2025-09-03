@@ -12,9 +12,9 @@ export const createUserTokens = (user:Partial<IUser>) =>{
         email: user.email,
         role:user.role
     }
-    const accessToken = generateJwtToken(jwtPayload,envVars.JWT_SECRET,envVars.JWT_EXPIRES_IN);
+    const accessToken = generateJwtToken(jwtPayload, envVars.JWT_SECRET, envVars.JWT_EXPIRED_IN);
     console.log("from userTokens:",accessToken);
-    const refreshToken = generateJwtToken(jwtPayload,envVars.JWT_REFRESH_SECRET,envVars.JWT_REFRESH_EXPIRES_IN);
+    const refreshToken = generateJwtToken(jwtPayload, envVars.JWT_REFRESH_SECRET, envVars.JWT_REFRESH_EXPIRED_IN);
     return {
         accessToken,
         refreshToken
@@ -36,7 +36,7 @@ export const createUserWithRefreshToken = async (refreshToken:string) =>{
         role:isUserExist.role
     
     };
-    const accessToken = generateJwtToken(jwtPayload,envVars.JWT_SECRET,envVars.JWT_EXPIRES_IN);
+    const accessToken = generateJwtToken(jwtPayload, envVars.JWT_SECRET, envVars.JWT_EXPIRED_IN);
     return {
         accessToken
     }

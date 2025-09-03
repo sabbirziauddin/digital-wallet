@@ -26,5 +26,6 @@ export interface IUser {
     _id?: Types.ObjectId,
     isDeleted?: boolean,
     isVerified?: boolean,
+    isPasswordMatched(password: string): Promise<boolean>;
 
 }

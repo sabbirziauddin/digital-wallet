@@ -17,7 +17,7 @@ export const globalErrorHandlers = (err:any,req:Request,res:Response,next:NextFu
             status: "error",
             message,
             stack: err.stack,
-        });
+        }); 
     } else {
         res.status(statusCode).json({
             status: "error",

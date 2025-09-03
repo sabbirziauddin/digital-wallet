@@ -25,6 +25,10 @@ export const seedSuperAdmin = async () => {
             password: hashedPassword,
             role: Role.SUPER_ADMIN,
             auths: [authProvider],
+            isPasswordMatched: async function (password: string): Promise<boolean> {
+                // Dummy implementation for seeding, actual logic should be in the model
+                return Promise.resolve(true);
+            }
         };
         const superAdmin = await User.create(payload)
         console.log(`Super Admin created with email: ${superAdmin.email}\n`);

@@ -1,4 +1,3 @@
-import { Sample } from './../../../node_modules/mongoose/types/pipelinestage.d';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,9 +29,9 @@ const loadEnvVars = (): IEnvVars => {
         DB_URL: process.env.DB_URL as string,
         NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
         JWT_SECRET: process.env.JWT_SECRET as string,
-        JWT_EXPIRED_IN: process.env.JWT_EXPIRES_IN as string,
+        JWT_EXPIRED_IN: process.env.JWT_EXPIRED_IN as string,
         JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
-        JWT_REFRESH_EXPIRED_IN: process.env.JWT_REFRESH_EXPIRES_IN as string,
+        JWT_REFRESH_EXPIRED_IN: process.env.JWT_REFRESH_EXPIRED_IN as string,
         BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS as string,
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,   

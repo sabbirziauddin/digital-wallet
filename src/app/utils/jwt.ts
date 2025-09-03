@@ -1,8 +1,8 @@
 import { Token } from './../../../node_modules/path-to-regexp/dist/index.d';
 import Jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 
-export const generateJwtToken = (payload:JwtPayload,secret:string,expiredIn:string|number)=>{
-    const accessToken = Jwt.sign(payload,secret,{ expiresIn:expiredIn} as SignOptions);
+export const generateJwtToken = (payload: JwtPayload, secret: string, expiresIn: string | number) => {
+    const accessToken = Jwt.sign(payload, secret, { expiresIn } as SignOptions);
     return accessToken;
 }
 

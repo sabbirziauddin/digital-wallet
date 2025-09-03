@@ -1,29 +1,34 @@
-import { email } from './../../../../node_modules/zod/src/v4/core/regexes';
-import  z  from 'zod';
-import { Role, Status } from './user.interface';
+import z from "zod";
 
-const authProviderSchema = z.object({
-    provider: z.string(),
-    providerId: z.string(),
-});
+
 
 export const createZodUserSchema = z.object({
     name: z
         .string()
         .min(2, { message: "Name must be at least 2 characters long." })
         .max(50, { message: "Name cannot exceed 50 characters." }),
-    email: z.string().trim().email('Invalid email address'),
-    password: z.string().trim().min(6, 'Password must be at least 6 characters long').optional(),
-    role: z.nativeEnum(Role).default(Role.USER).optional(),
-    status: z.nativeEnum(Status).default(Status.ACTIVE).optional(),
-    isDeleted: z.boolean().default(false).optional(),
-    isVerified: z.boolean().default(false).optional(),
-    auths: z.array(authProviderSchema).default([]).optional(),
+    email: z
+        .string()
+        .email({ message: "Invalid email address format." })
+        .min(5, { message: "Email must be at least 5 characters long." })
+        .max(100, { message: "Email cannot exceed 100 characters." }),
+    password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long." })
+        .regex(/^(?=.*[A-Z])/, {
+            message: "Password must contain at least 1 uppercase letter.",
+        })
+        .regex(/^(?=.*[!@#$%^&*])/, {
+            message: "Password must contain at least 1 special character.",
+        })
+        .regex(/^(?=.*\d)/, {
+            message: "Password must contain at least 1 number.",
+        }),
 });
 
-export const updateUserValidationSchema = createZodUserSchema.partial();
+
 
 export const UserValidation = {
     createZodUserSchema,
-    updateUserValidationSchema,
+
 };
