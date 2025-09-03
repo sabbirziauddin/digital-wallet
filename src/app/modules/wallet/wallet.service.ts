@@ -5,6 +5,7 @@ import AppError from "../../errorHelpers/AppError";
 import { get } from 'http';
 import { Transaction } from '../transaction/transaction.model';
 import { TransactionType } from '../transaction/transaction.interface';
+import { WalletStatus } from './wallet.interface';
 
 //retrieve wallet by user id
 const getWalletByUserId = async (userId: string) => {
@@ -24,6 +25,9 @@ const Deposit = async (userId: string, amount: number) => {
     const wallet = await getWalletByUserId(userId);
     if (!wallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Wallet not found");
+    }
+    if (wallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Wallet is blocked");
     }
     wallet.balance += amount;
     await wallet.save();
@@ -45,6 +49,9 @@ const Withdraw = async (userId: string, amount: number) => {
     if (!wallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Wallet not found");
     }
+    if (wallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Wallet is blocked");
+    }   
     if (wallet.balance < amount) {
         throw new AppError(httpStatus.BAD_REQUEST, "Insufficient balance");
     }
@@ -71,10 +78,16 @@ const transferMoney = async (senderId: string, receiverId: string, amount: numbe
     if (!senderWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Sender's wallet not found");
     }
+    if (senderWallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Sender's wallet is blocked");
+    }   
     const receiverWallet = await getWalletByUserId(receiverId);
     if (!receiverWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Receiver's wallet not found");
     }
+    if (receiverWallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Receiver's wallet is blocked");
+    }   
     if (senderWallet.balance < amount) {
         throw new AppError(httpStatus.BAD_REQUEST, "Insufficient balance");
     }
@@ -101,6 +114,9 @@ const cashIn = async (_agentId: string, targetUserId: string, amount: number) =>
     if (!agentWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Agent's wallet not found");
     }
+    if (agentWallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Agent's wallet is blocked");
+    }
     if (agentWallet.balance < amount) {
         throw new AppError(httpStatus.BAD_REQUEST, "Agent has insufficient balance");
     }
@@ -108,6 +124,10 @@ const cashIn = async (_agentId: string, targetUserId: string, amount: number) =>
     if (!targetWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Target user's wallet not found");
     }
+    if (targetWallet.status === WalletStatus.BLOCKED) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Target user's wallet is blocked");
+    }
+    //debit agent's wallet
     targetWallet.balance += amount;
     agentWallet.balance -= amount;
     await agentWallet.save();
@@ -130,6 +150,9 @@ const cashOut = async (_agentId: string, targetUserId: string, amount: number) =
     if (!targetWallet) {
         throw new AppError(httpStatus.NOT_FOUND, "Target user's wallet not found");
     }
+    if (targetWallet.status === WalletStatus.BLOCKED || targetWallet.status === WalletStatus.INACTIVE) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Target user's wallet is blocked");
+    }
     if (targetWallet.balance < amount) {
         throw new AppError(httpStatus.BAD_REQUEST, "Target user has insufficient balance");
     }
@@ -137,6 +160,7 @@ const cashOut = async (_agentId: string, targetUserId: string, amount: number) =
     await targetWallet.save();
     //credit agent's wallet
     const agentWallet = await getWalletByUserId(_agentId);
+
     if (agentWallet) {
         agentWallet.balance += amount;
         await agentWallet.save();
@@ -153,6 +177,26 @@ const cashOut = async (_agentId: string, targetUserId: string, amount: number) =
 
 
 }
+//admin blocks a wallet by its id
+const blowckWalletById = async (walletId: string) => {
+    const wallet = await Wallet.findById(walletId);
+    if (!wallet) {
+        throw new AppError(httpStatus.NOT_FOUND, "Wallet not found");
+    }
+    wallet.status = WalletStatus.BLOCKED;
+    await wallet.save();
+    return wallet;
+}
+//admin unblocks a wallet by its id
+const unblockWalletById = async (walletId: string) => {
+    const wallet = await Wallet.findById(walletId);
+    if (!wallet) {
+        throw new AppError(httpStatus.NOT_FOUND, "Wallet not found");
+    }
+    wallet.status = WalletStatus.ACTIVE;
+    await wallet.save();
+    return wallet;
+}
 
 export const walletService = {
     getWalletByUserId,
@@ -160,7 +204,9 @@ export const walletService = {
     Withdraw,
     transferMoney,
     cashIn,
-    cashOut
+    cashOut,
+    blowckWalletById,
+    unblockWalletById
 
 
 

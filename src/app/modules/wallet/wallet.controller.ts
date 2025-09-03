@@ -1,3 +1,4 @@
+import { walController } from './wallet.controller';
 import httpStatus from 'http-status-codes';
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsynch";
@@ -65,11 +66,38 @@ const cashOut = catchAsync(async (req: Request, res: Response, next: NextFunctio
         data: wallet,
     });
 })
+//admin blocks a wallet by its id
+const blockWalletById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { walletId } = req.params;
+    const wallet = await walletService.blowckWalletById(walletId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Wallet blocked successfully",
+        data: wallet,
+    });
+
+})
+//admin unblocks a wallet by its id
+const unblockWalletById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { walletId } = req.params;
+    const wallet = await walletService.unblockWalletById(walletId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Wallet unblocked successfully",
+        data: wallet,
+    });
+})
+
+
 
 export const walletController = {
     depositMoney,
     withdrawMoney,
     transferMoney,
     cashIn,
-    cashOut
+    cashOut,
+    blockWalletById,
+    unblockWalletById
 }   
