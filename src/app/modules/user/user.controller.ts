@@ -15,7 +15,7 @@ const createUser = catchAsync(async (req: Request, res: Response, _next: NextFun
         data: user
     })
 })
-const getAllUser = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const user = await userServices.getAllUserFromDb();
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -24,7 +24,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response, _next: NextFun
         data: user
     })
 })
-const updateUser = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     const token = req.headers.authorization;
     const verifyJwtTokenResult = verifyJwtToken(token as string, envVars.JWT_SECRET);

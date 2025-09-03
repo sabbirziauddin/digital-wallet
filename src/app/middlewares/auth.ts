@@ -23,7 +23,7 @@ try {
         throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.status}, please contact to admin`);
     }
     if (!authRoles.includes(verifiedToken.role)) {
-        throw new AppError(403, "You are not permitted to view this route!!!")
+        throw new AppError(httpStatus.FORBIDDEN, "You are not permitted to to send money .please contact admin!!!")
     }
     req.user = verifiedToken;
     next();

@@ -8,6 +8,7 @@ import AppError from "../../errorHelpers/AppError";
 import { envVars } from '../../config/env';
 
 const createUserIntoDb = async (payload: Partial<IUser>) => {
+    console.log("from user.service -->", payload);
     const { email, password, ...rest } = payload;
 
     if (!email) {
