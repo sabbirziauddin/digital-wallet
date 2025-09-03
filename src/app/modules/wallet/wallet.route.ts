@@ -9,5 +9,6 @@ router.post("/deposit", auth(...Object.values(Role)), walletController.depositMo
 router.post("/withdraw", auth(...Object.values(Role)), walletController.withdrawMoney)
 router.post("/transfer", auth(...Object.values(Role)), walletController.transferMoney)
 router.post("/cash-in", auth(Role.AGENT), walletController.cashIn)
+router.post("/cash-out", auth(Role.AGENT), walletController.cashOut)
 
 export const walletRoutes = router;

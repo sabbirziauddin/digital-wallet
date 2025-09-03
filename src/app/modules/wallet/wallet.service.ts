@@ -121,13 +121,47 @@ const cashIn = async (_agentId: string, targetUserId: string, amount: number) =>
     })
     return targetWallet;
 }
+//agent cashes out money from user's wallet
+const cashOut = async (_agentId: string, targetUserId: string, amount: number) => {
+    if (amount <= 0) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Cash out amount must be greater than zero");
+    }
+    const targetWallet = await getWalletByUserId(targetUserId);
+    if (!targetWallet) {
+        throw new AppError(httpStatus.NOT_FOUND, "Target user's wallet not found");
+    }
+    if (targetWallet.balance < amount) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Target user has insufficient balance");
+    }
+    targetWallet.balance -= amount;
+    await targetWallet.save();
+    //credit agent's wallet
+    const agentWallet = await getWalletByUserId(_agentId);
+    if (agentWallet) {
+        agentWallet.balance += amount;
+        await agentWallet.save();
+    }
+    await Transaction.create({
+        from: targetWallet._id,
+        to: agentWallet ? agentWallet._id : null,
+        amount,
+        Types: TransactionType.CASH_OUT,
+        status: "completed"
+    })
+    return targetWallet;
+
+
+
+}
 
 export const walletService = {
     getWalletByUserId,
     Deposit,
     Withdraw,
     transferMoney,
-    cashIn
+    cashIn,
+    cashOut
+
 
 
 

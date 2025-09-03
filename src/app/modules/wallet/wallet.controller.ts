@@ -53,10 +53,23 @@ const cashIn = catchAsync(async (req: Request, res: Response, next: NextFunction
         data: wallet,
     });
 })
+//agent cash-out from user's wallet
+const cashOut = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const agentId = req.user?.userId;
+    const { targetUserId, balance } = req.body;
+    const wallet = await walletService.cashOut(agentId as string, targetUserId, Number(balance));
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Cash out successful",
+        data: wallet,
+    });
+})
 
 export const walletController = {
     depositMoney,
     withdrawMoney,
     transferMoney,
-    cashIn
+    cashIn,
+    cashOut
 }   
