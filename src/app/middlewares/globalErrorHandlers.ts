@@ -67,7 +67,7 @@ export const globalErrorHandlers = (err: any, req: Request, res: Response, next:
     const isDev = envVars.NODE_ENV === 'development';
 
     res.status(normalized.statusCode).json({
-        status: 'error',
+        success: false,
         message: normalized.message,
         errors: normalized.errors,
         ...(isDev ? { stack: normalized.stack } : {}),

@@ -12,7 +12,7 @@ export const auth =(...authRoles:string[]) =>async (req:Request,res:Response,nex
 try {
     const accessToken = req.headers.authorization;
     if(!accessToken){
-        throw new AppError(403,"You are not authorized to access this route")
+        throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized to access this route")
     }
     const verifiedToken = verifyJwtToken(accessToken,envVars.JWT_SECRET) as JwtPayload; 
     const isUserExist = await User.findOne({email:verifiedToken.email});
@@ -36,4 +36,3 @@ try {
 }
 
 }
-

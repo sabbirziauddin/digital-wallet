@@ -23,20 +23,22 @@ const startServer = async () => {
     await seedSuperAdmin()
 })()
 
-//unhandle exeption
-process.on("uncaughtException", (error) => {
+// Graceful shutdown for unhandled errors
+const unexpectedErrorHandler = (error: unknown) => {
+    console.error("UNEXPECTED ERROR:", error);
     if (server) {
-        console.log("Uncaught Exception: ", error);
-        process.exit(1); // Exit the process with failure
-    }
-    process.exit(1); // Exit the process with success
-});
-
-//Promise.reject(new Error("I forgot to catch this uncaught exception"));
-process.on("unhandledRejection", (error) => {
-    if (server) {
-        console.log("uncaught rejection", error);
+        console.log("Server is closing...");
+        server.close(() => {
+            process.exit(1); // Exit with failure code
+        });
+    } else {
         process.exit(1);
     }
-    process.exit(1);
+};
+
+process.on("uncaughtException", unexpectedErrorHandler);
+process.on("unhandledRejection", (reason) => {
+    // Throwing the error so uncaughtException handler can deal with it
+    // This ensures consistent handling and logging for all unexpected errors.
+    throw reason;
 });
