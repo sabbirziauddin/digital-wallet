@@ -1,5 +1,7 @@
 # Digital Wallet API
 
+[![Deployment](https://img.shields.io/badge/Vercel-Live-brightgreen)](https://digital-wallet-eta.vercel.app/)
+
 A robust and secure RESTful API for a digital wallet system, built with Node.js, Express, and TypeScript. This backend service provides core functionalities for user management, wallet operations, and transaction handling.
 
 ## Features
@@ -38,7 +40,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository:**
     ```sh
-    git clone <https://github.com/sabbirziauddin/digital-wallet.gitl>
+    git clone <https://github.com/sabbirziauddin/digital-wallet.git>
     cd digital-wallet
     ```
 
@@ -320,6 +322,10 @@ src/
 ├── app.ts              # Express app configuration
 └── server.ts           # Server initialization
 ```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request or open an issue if you find a bug or have a feature request.
 
 ## License
 
